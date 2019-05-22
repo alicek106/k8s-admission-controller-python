@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webhook-mutate
+  namespace: webhook-example
+  labels:
+    app: mutate-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mutate-server
+  template:
+    metadata:
+      labels:
+        app: mutate-server
+    spec:
+      containers:
+      - name: server
+        image: alicek106/pycharm-remote-builder:latest
+        args: ["tail", "-f", "/dev/null"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+          name: mutate-server-api
+
+        volumeMounts:
+        - name: webhook-certs
+          mountPath: /run/secrets/tls
+          readOnly: true
+
+      volumes:
+      - name: webhook-certs
+        secret:
+          secretName: webhook-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mutate-server-svc
+  namespace: webhook-example
+spec:
+  selector:
+    app: mutate-server
+  ports:
+    - port: 443
+      targetPort: mutate-server-api
