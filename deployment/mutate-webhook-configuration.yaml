@@ -1,0 +1,17 @@
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: webhook-mwc
+webhooks:
+  - name: mutate-server-svc.webhook-example.svc
+    clientConfig:
+      service:
+        name: mutate-server-svc
+        namespace: webhook-example
+        path: "/mutate"
+      caBundle: {{CA_PEM_BASE64}}
+    rules:
+      - operations: [ "CREATE" ]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]

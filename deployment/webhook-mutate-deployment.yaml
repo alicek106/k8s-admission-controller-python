@@ -17,22 +17,21 @@ spec:
     spec:
       containers:
       - name: server
-        image: alicek106/pycharm-remote-builder:latest
-        args: ["tail", "-f", "/dev/null"]
+        image: alicek106/k8s-admission-controller-mutator:0.0
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
-          name: mutate-server-api
+          name: flask 
 
         volumeMounts:
-        - name: webhook-certs
+        - name: webhook-tls
           mountPath: /run/secrets/tls
           readOnly: true
 
       volumes:
-      - name: webhook-certs
+      - name: webhook-tls
         secret:
-          secretName: webhook-tls
+          secretName: webhook-certs
 ---
 apiVersion: v1
 kind: Service
@@ -44,4 +43,4 @@ spec:
     app: mutate-server
   ports:
     - port: 443
-      targetPort: mutate-server-api
+      targetPort: flask 
