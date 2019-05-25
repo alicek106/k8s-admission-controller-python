@@ -25,6 +25,15 @@ def webhook():
     pprint(str(patch))
     print('\n')
 
+    if request_info_object['metadata']['namespace'] == 'webhook-example':
+        admissionReview = {
+            "response": {
+                "allowed": False,
+                "uid": request_info["request"]["uid"],
+            }
+        }
+        return jsonify(admissionReview)
+
     admissionReview = {
         "response": {
             "allowed": True,
