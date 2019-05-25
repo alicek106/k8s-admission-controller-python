@@ -30,6 +30,9 @@ def webhook():
             "response": {
                 "allowed": False,
                 "uid": request_info["request"]["uid"],
+                "status":{
+                    "message": "Why are you trying to create in webhook-example?"
+                }
             }
         }
         return jsonify(admissionReview)
